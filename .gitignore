@@ -1,0 +1,8 @@
+concurrentqueue/
+
+*.log
+*.tmp
+*.swp
+*.bak
+dist/
+build/
