@@ -34,7 +34,7 @@ namespace yblsys {
             // this tail load can actually be relaxed, but it is very very tricky and even change slightly of the behavior, it can break, so we use acquire here
             auto current_tail = tail.load(std::memory_order_acquire);
             auto current_head = head.load(std::memory_order_relaxed);
-            // note that the distance between the head and the tail is at most YBLSYS_BUFFER_SIZE - 1
+            // note that the distance between the head and the tail is at most YBLSYS_BUFFER_SIZE - 1, leave one slot empty.
             if(current_head - current_tail >= YBLSYS_BUFFER_SIZE - 1){
                 // we are full, we drop the item for low latency and this should be rare
                 // leave one slot to check the full condition and distinguish the full and empty
@@ -43,7 +43,6 @@ namespace yblsys {
             buffer[current_head & (YBLSYS_BUFFER_SIZE - 1)] = item;
             // 3. increment the producer index
             head.store(current_head + 1, std::memory_order_release);
-            // return
             return true;
         }
 
